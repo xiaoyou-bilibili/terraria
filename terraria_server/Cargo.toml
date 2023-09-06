@@ -1,0 +1,26 @@
+[package]
+name = "terriaira_server"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+# 异步编程库
+tokio = {version = "1.20.0", features = ["full"]}
+# web框架
+axum = {version = "0.6.20", features = ["headers", "ws"]}
+# socket并发读写支持
+futures = "0.3.17"
+# 静态路由和跨域
+tower= "0.4.13"
+tower-http = { version = "0.3.5", features = ["fs", "cors"] }
+# json序列化库
+serde = {version = "1.0.140", features = ['derive']}
+serde_json = "1.0.91"
+# 异步日志跟踪
+tracing = "0.1"
+tracing-subscriber = "0.2"
+# 单生产者多消费者
+crossbeam = "0.8"
+# 全局变量
+lazy_static = "1.4.0"
