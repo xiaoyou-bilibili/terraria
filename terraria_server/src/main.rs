@@ -1,3 +1,4 @@
+use std::env;
 use crate::web::handle::{edit_config, get_config, send_cmd, start_game, stop_game};
 use axum::extract::DefaultBodyLimit;
 use axum::{routing::{get, post}, Router, ServiceExt, Extension};
@@ -6,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use tower::layer::layer_fn;
 use tower::ServiceBuilder;
 use tower_http::cors::{Any, CorsLayer};
-use tracing::info;
+use tracing::{error, info};
 use tracing_subscriber::fmt;
 use crate::infra::game::GameServer;
 use crate::web::middleware;
@@ -20,6 +21,12 @@ async fn main() {
     fmt::Subscriber::builder()
         .with_max_level(tracing::Level::INFO)
         .init();
+    // 获取环境变量
+    let mut token = "xiaoyou";
+    match env::var("SERVER_TOKEN") {
+        Ok(value) => token = value.as_str(),
+        Err(e) => error!("无法读取环境变量: {}", e),
+    }
     // 新建router
     let mut status = false;
     let app = Router::new()
@@ -34,7 +41,7 @@ async fn main() {
         .route("/api/ws", get(web::websocket::ws_handler))
         .layer(Extension(AppState{ game: Arc::new(Mutex::new(GameServer::build()))}))  //  全局状态共享
         // 自定义认证中间件
-        .layer(layer_fn(move |inner| middleware::AuthMiddleware { inner, token: "xiaoyou".to_string() }));
+        .layer(layer_fn(move |inner| middleware::AuthMiddleware { inner, token: token.to_string() }));
     info!("server listen on 3000");
     // 绑定socket
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
