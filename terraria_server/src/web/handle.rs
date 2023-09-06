@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::Write;
 use lazy_static::lazy_static;
 use crate::infra::conf::{read_data, write_data};
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex};
 
 lazy_static! {
     pub static ref GAME_STATUS: Mutex<bool> = Mutex::new(false);
@@ -40,7 +40,7 @@ pub async fn edit_config(Json(payload): Json<EditConfig>) -> HandleResult<String
 
 // 启动游戏
 pub async fn start_game(
-    Extension(mut app_state): Extension<AppState>,
+    Extension(app_state): Extension<AppState>,
 ) -> HandleResult<Vec<String>> {
     app_state.game.lock().unwrap().start_game();
     let mut status = GAME_STATUS.lock().unwrap();
@@ -50,7 +50,7 @@ pub async fn start_game(
 
 // 关闭游戏
 pub async fn stop_game(
-    Extension(mut app_state): Extension<AppState>,
+    Extension(app_state): Extension<AppState>,
 ) -> HandleResult<Vec<String>> {
     app_state.game.lock().unwrap().stop_game();
     let mut status = GAME_STATUS.lock().unwrap();
@@ -70,9 +70,7 @@ pub async fn send_cmd(
 }
 
 // 获取配置
-pub async fn get_config(
-    Extension(app_state): Extension<AppState>,
-) -> HandleResult<GetConfigResp> {
+pub async fn get_config() -> HandleResult<GetConfigResp> {
     // 获取配置文件
     let conf = read_data();
     if conf.is_some() {

@@ -1,7 +1,6 @@
 use std::sync::{Arc};
 use std::thread;
 use crossbeam::channel;
-use futures::future::{err, ok};
 use tracing::{error, info};
 use crate::infra::shell::ShellServer;
 
