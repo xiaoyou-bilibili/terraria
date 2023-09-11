@@ -18,7 +18,7 @@ pub async fn edit_config(Json(payload): Json<EditConfig>) -> HandleResult<String
         return Response::err2("文件创建失败", e);
     }
     // 要写入文件的文本
-    let content = format!("# 服务器配置，请不要直接修改\nworld=/home/xiaoyou/game/terraria/world/main.wld\nmaxplayers={}\nport={}\npassword={}\nautocreate={}\nworldname={}\ndifficulty={}\nmotd={}\nlanguage=zh-Hans\nupnp=1",
+    let content = format!("# 服务器配置，请不要直接修改\nworld=/game/word.wld\nmaxplayers={}\nport={}\npassword={}\nautocreate={}\nworldname={}\ndifficulty={}\nmotd={}\nlanguage=zh-Hans\nupnp=1",
                           payload.max_player,
                           payload.port,
                           payload.password,
